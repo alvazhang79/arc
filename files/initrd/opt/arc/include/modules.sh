@@ -13,7 +13,7 @@ function unpackModules() {
   rm -rf "${UNPATH}"
   mkdir -p "${UNPATH}"
   if [ "${KERNEL}" = "custom" ]; then
-    tar -zxf "${CKS_PATH}/modules-${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}"
+    tar -zxf "${CUSTOM_PATH}/modules-${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}"
   else
     tar -zxf "${MODULES_PATH}/${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}"
   fi
@@ -32,7 +32,7 @@ function packModules() {
   KERNEL="$(readConfigKey "kernel" "${USER_CONFIG_FILE}")"
 
   if [ "${KERNEL}" = "custom" ]; then
-    tar -zcf "${CKS_PATH}/modules-${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}" .
+    tar -zcf "${CUSTOM_PATH}/modules-${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}" .
   else
     tar -zcf "${MODULES_PATH}/${PLATFORM}-${PKVER}.tgz" -C "${UNPATH}" .
   fi

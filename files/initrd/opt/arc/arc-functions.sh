@@ -161,8 +161,8 @@ function arcModel() {
     writeConfigKey "smallnum" "" "${USER_CONFIG_FILE}"
     writeConfigKey "sn" "" "${USER_CONFIG_FILE}"
     writeConfigKey "zimage-hash" "" "${USER_CONFIG_FILE}"
-    PLTCNT="$(readConfigKey "platforms.${A}.ccnt" "${P_FILE}")"
     if [ "${MODEL}" = "SA6400" ]; then
+      PLTCNT="$(readConfigKey "platforms.${PLATFORM}.ccnt" "${P_FILE}")"
       if [ "${CPUCNT:-0}" -gt "${PLTCNT:-0}" ] || [ "${MEV}" = "hyperv" ]; then
         writeConfigKey "kernel" "custom" "${USER_CONFIG_FILE}"
       fi

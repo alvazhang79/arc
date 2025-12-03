@@ -86,7 +86,7 @@ for SUBVER in {0..9}; do
   done
 done
 if [ -z "${PAT_URL_UPDATE}" ] || [ -z "${PAT_HASH_UPDATE}" ]; then
-  echo -e "\nError: No valid PAT Data found for ${PRODUCTVER}-${BUILDNUM}.\nPlease update your ModelDB."
+  echo -e "\nError: No valid PAT Data found for ${PRODUCTVER} (${BUILDNUM}).\nPlease update your ModelDB."
   sleep 3
   exit 1
 fi

@@ -250,9 +250,13 @@ function arcVersion() {
     CVS="$(readConfigEntriesArray "platforms.${PLATFORM}.productvers" "${P_FILE}")"
     PVS="$(readConfigEntriesArray "${PLATFORM}.\"${MODEL}\"" "${D_FILE}")"
     LVS=""
-    for V in $(echo "${PVS}" | sort -r); do
-      if echo "${CVS}" | grep -qx "${V:0:3}"; then
-        LVS="${LVS}${V} "$'\n'
+        for V in $(echo "${PVS}" | sort -r); do
+      BASE_BUILD="${V%-*}"
+      if ! [[ " ${UNIQUE_BUILDS[*]} " =~ " ${BASE_BUILD} " ]]; then
+        if echo "${CVS}" | grep -qx "${V:0:3}"; then
+          UNIQUE_BUILDS+=("${BASE_BUILD}")
+          LVS="${LVS}${V} "$'\n'
+        fi
       fi
     done
     dialog --clear --no-items --nocancel --title "DSM Version" --backtitle "$(backtitle)" \
@@ -260,7 +264,6 @@ function arcVersion() {
     2>"${TMP_PATH}/resp"
     [ $? -ne 0 ] && return 1
     RESP="$(cat "${TMP_PATH}/resp" 2>/dev/null)"
-    [ -z "${RESP}" ] && return
     if [ "${PRODUCTVER}" != "${RESP:0:3}" ]; then
       PRODUCTVER="${RESP:0:3}"
       rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}" >/dev/null 2>&1 || true
@@ -268,24 +271,12 @@ function arcVersion() {
 
     writeConfigKey "productver" "${PRODUCTVER}" "${USER_CONFIG_FILE}"
     writeConfigKey "buildnum" "" "${USER_CONFIG_FILE}"
-    writeConfigKey "ramdisk-hash" "" "${USER_CONFIG_FILE}"
     writeConfigKey "smallnum" "" "${USER_CONFIG_FILE}"
+    writeConfigKey "ramdisk-hash" "" "${USER_CONFIG_FILE}"
     writeConfigKey "zimage-hash" "" "${USER_CONFIG_FILE}"
 
     PAT_URL_UPDATE="$(readConfigKey "${PLATFORM}.\"${MODEL}\".\"${RESP}\".url" "${D_FILE}")"
     PAT_HASH_UPDATE="$(readConfigKey "${PLATFORM}.\"${MODEL}\".\"${RESP}\".hash" "${D_FILE}")"
-
-    while [ -z "${PAT_URL_UPDATE}" ] || [ -z "${PAT_HASH_UPDATE}" ]; do
-      MSG="Failed to get PAT Data.\n"
-      MSG+="Please manually fill in the URL and Hash of PAT.\n"
-      MSG+="You will find these Data at: http://dsmdata.auxxxilium.tech/"
-      dialog --backtitle "$(backtitle)" --colors --title "Arc Build" --default-button "OK" \
-        --form "${MSG}" 11 120 2 "Url" 1 1 "${PAT_URL_UPDATE}" 1 8 110 0 "Hash" 2 1 "${PAT_HASH_UPDATE}" 2 8 110 0 \
-        2>"${TMP_PATH}/resp"
-      [ $? -ne 0 ] && return 1
-      PAT_URL_UPDATE="$(sed -n '1p' "${TMP_PATH}/resp")"
-      PAT_HASH_UPDATE="$(sed -n '2p' "${TMP_PATH}/resp")"
-    done
 
     if [ "${PAT_URL}" != "${PAT_URL_UPDATE}" ] || [ "${PAT_HASH}" != "${PAT_HASH_UPDATE}" ]; then
       PAT_URL="${PAT_URL_UPDATE}"

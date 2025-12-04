@@ -59,11 +59,16 @@ mkdir -p "${RAMDISK_PATH}"
 # Check if DSM Version changed
 . "${RAMDISK_PATH}/etc/VERSION"
 
-if [ -n "${PRODUCTVER}" ] && [ -n "${BUILDNUM}" ] && [ -n "${SMALLNUM}" ] &&
-  ([ "${PRODUCTVER}" != "${majorversion:-0}.${minorversion:-0}" ] || [ "${BUILDNUM}" != "${buildnumber:-0}" ] || [ "${SMALLNUM}" != "${smallfixnumber:-0}" ]); then
-  OLDVER="${PRODUCTVER}(${BUILDNUM}$([[ ${SMALLNUM:-0} -ne 0 ]] && echo "u${SMALLNUM}"))"
-  NEWVER="${majorversion}.${minorversion}(${buildnumber}$([[ ${smallfixnumber:-0} -ne 0 ]] && echo "u${smallfixnumber}"))"
-  echo -e ">> Version changed from ${OLDVER} to ${NEWVER}"
+if [ -n "${PRODUCTVER}" ] && [ -n "${BUILDNUM}" ] && [ -n "${SMALLNUM}" ]; then
+  if [ "${PRODUCTVER}" != "${majorversion:-0}.${minorversion:-0}" ] || [ "${BUILDNUM}" != "${buildnumber:-0}" ] || [ "${SMALLNUM}" != "${smallfixnumber:-0}" ]; then
+    OLDVER="${PRODUCTVER}(${BUILDNUM}$([[ ${SMALLNUM:-0} -ne 0 ]] && echo "u${SMALLNUM}"))"
+    NEWVER="${majorversion}.${minorversion}(${buildnumber}$([[ ${smallfixnumber:-0} -ne 0 ]] && echo "u${smallfixnumber}"))"
+    echo -e ">> Version changed from ${OLDVER} to ${NEWVER}"
+  fi
+elif [ -z "${PRODUCTVER}" ]; then
+  echo -e "Error: PRODUCTVER is not set."
+  sleep 3
+  exit 1
 fi
 
 # Update buildnumber

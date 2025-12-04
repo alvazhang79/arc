@@ -460,7 +460,7 @@ function makearc() {
       livepatch
       sleep 3
     ) 2>&1 | dialog --backtitle "$(backtitle)" --colors --title "Build Loader" \
-      --progressbox "Patching DSM Files..." 20 70
+      --progressbox "Patching DSM Image..." 20 70
   else
     dialog --backtitle "$(backtitle)" --title "Build Loader" --aspect 18 \
       --infobox "Configuration issue found.\nCould not build Loader!\nExit." 5 40

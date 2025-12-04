@@ -166,10 +166,16 @@ for ADDON in "${!ADDONS[@]}"; do
   fi
 done
 
-# Extract modules to ramdisk
-echo -e ">> Ramdisk: install modules"
-installModules "${PLATFORM}" "${KVERP}" "${!MODULES[@]}" || exit 1
-gzip -dc "${LKMS_PATH}/rp-${PLATFORM}-${KVERP}-${LKM}.ko.gz" >"${RAMDISK_PATH}/usr/lib/modules/rp.ko" 2>>"${LOG_FILE}" || exit 1
+# Fan control
+if [[ -z "${ADDONS[fancontrol]}" ]]; then
+  SYNOINFO["support_fan"]="no"
+  SYNOINFO["support_fan_adjust_dual_mode"]="no"
+  SYNOINFO["support_adt7490"]="no"
+else
+  SYNOINFO["support_fan"]="yes"
+  SYNOINFO["support_fan_adjust_dual_mode"]="yes"
+  SYNOINFO["support_adt7490"]="yes"
+fi
 
 # Patch synoinfo.conf
 echo -n "" >"${RAMDISK_PATH}/addons/synoinfo.conf"
@@ -189,6 +195,11 @@ if [ ! -x "${RAMDISK_PATH}/usr/bin/set_key_value" ]; then
   printf '#!/bin/sh\n%s\n_set_conf_kv "$@"' "$(declare -f _set_conf_kv)" >"${RAMDISK_PATH}/usr/bin/set_key_value"
   chmod a+x "${RAMDISK_PATH}/usr/bin/set_key_value"
 fi
+
+# Extract modules to ramdisk
+echo -e ">> Ramdisk: install modules"
+installModules "${PLATFORM}" "${KVERP}" "${!MODULES[@]}" || exit 1
+gzip -dc "${LKMS_PATH}/rp-${PLATFORM}-${KVERP}-${LKM}.ko.gz" >"${RAMDISK_PATH}/usr/lib/modules/rp.ko" 2>>"${LOG_FILE}" || exit 1
 
 # Copying modulelist
 if [ -f "${USER_UP_PATH}/modulelist" ]; then

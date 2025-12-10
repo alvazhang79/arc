@@ -745,7 +745,7 @@ function modulesMenu() {
       fi
       idx=0
       while (( idx <= 5 )); do
-        local TAG="$(curl -m 10 -skL "https://api.github.com/repos/AuxXxilium/arc-modules-ex/releases" | jq -r ".[].tag_name" | sort -rV | head -1)"
+        local TAG="$(curl -m 10 -skL "https://api.github.com/repos/AuxXxilium/arc-modules-ex/releases" | jq -r ".[].tag_name" | sort -rV | head -1 | sed 's/^[v|V]//g')"
         if [ -n "${TAG}" ]; then
           break
         fi
@@ -1476,8 +1476,8 @@ function updateMenu() {
       1)
         # Ask for Tag
         if [ "${ARC_OFFLINE}" = "false" ]; then
-          TAG="$(curl -m 10 -skL "${API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1)"
-          BETATAG="$(curl -m 10 -skL "${BETA_API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1)"
+          TAG="$(curl -m 10 -skL "${API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1 | sed 's/^[v|V]//g')"
+          BETATAG="$(curl -m 10 -skL "${BETA_API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1 | sed 's/^[v|V]//g')"
           dialog --clear --backtitle "$(backtitle)" --title "Update Loader" \
             --menu "Current: ${ARC_VERSION}" 7 50 0 \
             1 "Latest ${TAG}" \
@@ -1532,8 +1532,8 @@ function updateMenu() {
       2)
         # Ask for Tag
         if [ "${ARC_OFFLINE}" = "false" ]; then
-          TAG="$(curl -m 10 -skL "${API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1)"
-          BETATAG="$(curl -m 10 -skL "${BETA_API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1)"
+          TAG="$(curl -m 10 -skL "${API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1 | sed 's/^[v|V]//g')"
+          BETATAG="$(curl -m 10 -skL "${BETA_API_URL}" | jq -r ".[].tag_name" | grep -v "dev" | sort -rV | head -1 | sed 's/^[v|V]//g')"
           dialog --clear --backtitle "$(backtitle)" --title "Upgrade Loader" --colors \
             --menu "\Z1Loader will be reset to defaults after upgrade!\nIf you use Hardware encryption, your key will be deleted!\Zn\nCurrent: ${ARC_VERSION}" 10 65 0 \
             1 "Latest ${TAG}" \

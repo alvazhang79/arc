@@ -156,6 +156,7 @@ ETHN=0
 for N in ${ETHX}; do
   MAC="$(readConfigKey "${N}" "${USER_CONFIG_FILE}")"
   [ -z "${MAC}" ] && MAC="$(cat /sys/class/net/${N}/address 2>/dev/null)"
+  CMDLINE["R${N}"]="$(cat /sys/class/net/${N}/address 2>/dev/null)"
   CMDLINE["mac$((++ETHN))"]="${MAC}"
 done
 CMDLINE['netif_num']="${ETHN}"

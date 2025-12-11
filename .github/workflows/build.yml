@@ -166,7 +166,7 @@ jobs:
 
           echo "Image Converter"
           qemu-img convert -p -f raw -O vmdk ${IMAGE_FILE} arc-dyn.vmdk
-          qemu-img convert -p -f raw -o subformat=monolithicFlat -O vmdk ${IMAGE_FILE} arc.vmdk
+          qemu-img convert -p -f raw -O vmdk -o subformat=monolithicFlat ${IMAGE_FILE} arc.vmdk
 
           echo "Create Arc vhd"
           createvmc "arc.vmc"

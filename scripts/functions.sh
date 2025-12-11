@@ -278,15 +278,15 @@ function getBuildroot() {
   FOUND_ASSET=false
   while read -r ID NAME; do
     echo "Checking asset: ${NAME}"
-    if [[ "${NAME}" == buildroot*.zip ]]; then
+    if [[ "${NAME}" == update*.zip ]]; then
       FOUND_ASSET=true
       curl -kL -H "Authorization: token ${TOKEN}" -H "Accept: application/octet-stream" "https://api.github.com/repos/AuxXxilium/${REPO}/releases/assets/${ID}" -o "${DEST_PATH}/br.zip"
       echo "Buildroot: ${TAG}-${TYPE}"
       unzip -o "${DEST_PATH}/br.zip" -d "${DEST_PATH}"
       
       # Try to find kernel and initrd
-      find "${DEST_PATH}" -name "bzImage*" -not -name "bzImage-arc" -exec mv -f {} "${DEST_PATH}/bzImage-arc" \;
-      find "${DEST_PATH}" -name "rootfs*" -not -name "initrd-arc" -exec mv -f {} "${DEST_PATH}/initrd-arc" \;
+      find "${DEST_PATH}" -type f -name "bzImage-arc" -exec mv -f {} "${DEST_PATH}/bzImage-arc" \;
+      find "${DEST_PATH}" -type f -name "initrd-arc" -exec mv -f {} "${DEST_PATH}/initrd-arc" \;
       
       if [ -f "${DEST_PATH}/bzImage-arc" ] && [ -f "${DEST_PATH}/initrd-arc" ]; then
         echo "Buildroot files extracted successfully"

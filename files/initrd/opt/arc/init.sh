@@ -210,6 +210,31 @@ mkdir -p "${ADDONS_PATH}"
 mkdir -p "${CUSTOM_PATH}"
 mkdir -p "${LKMS_PATH}"
 mkdir -p "${CONFIGS_PATH}"
+
+# Patch Configs for SA6400 7.3.2
+patch_configs_732() {
+  local P_FILE="${CONFIGS_PATH}/platforms.yml"
+  local D_FILE="${CONFIGS_PATH}/data.yml"
+  
+  if [ -f "${P_FILE}" ]; then
+    # Inject 7.3 platform definition for epyc7002 if missing
+    if [ -z "$(readConfigKey "platforms.epyc7002.productvers.\"7.3\"" "${P_FILE}")" ]; then
+       # Assume same kver as 7.2 (5.10.55)
+       writeConfigKey "platforms.epyc7002.productvers.\"7.3\".kver" "5.10.55" "${P_FILE}"
+    fi
+  fi
+
+  if [ -f "${D_FILE}" ]; then
+    # Inject SA6400 7.3.2 definition if missing
+    # Version: 7.3.2-86009
+    local VER="7.3.2-86009"
+    if [ -z "$(readConfigKey "epyc7002.\"SA6400\".\"${VER}\"" "${D_FILE}")" ]; then
+       writeConfigKey "epyc7002.\"SA6400\".\"${VER}\".url" "https://cndl.synology.cn/download/DSM/release/7.3.2/86009/DSM_SA6400_86009.pat" "${D_FILE}"
+       writeConfigKey "epyc7002.\"SA6400\".\"${VER}\".hash" "null" "${D_FILE}"
+    fi
+  fi
+}
+patch_configs_732
 mkdir -p "${MODULES_PATH}"
 mkdir -p "${PATCH_PATH}"
 mkdir -p "${USER_UP_PATH}"

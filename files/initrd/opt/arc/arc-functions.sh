@@ -26,7 +26,9 @@ function arcModel() {
       while read -r M A; do
         COMPATIBLE=1
         DT="$(readConfigKey "platforms.${A}.dt" "${P_FILE}")"
-        KVERM="$(readConfigKey "platforms.${A}.productvers.\"7.2\".kver" "${P_FILE}" | awk -F'.' '{print $1".x"}')"
+        KVERM="$(readConfigKey "platforms.${A}.productvers.\"7.3\".kver" "${P_FILE}")"
+        [ -z "${KVERM}" ] && KVERM="$(readConfigKey "platforms.${A}.productvers.\"7.2\".kver" "${P_FILE}")"
+        KVERM="$(echo "${KVERM}" | awk -F'.' '{print $1".x"}')"
         PLTCNT="$(readConfigKey "platforms.${A}.ccnt" "${P_FILE}")"
         FLAGS="$(readConfigArray "platforms.${A}.flags" "${P_FILE}")"
         for F in ${FLAGS}; do

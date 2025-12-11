@@ -274,8 +274,12 @@ function getBuildroot() {
   [ ! -d "${DEST_PATH}" ] && mkdir -p "${DEST_PATH}"
   rm -f "${DEST_PATH}/bzImage-arc"
   rm -f "${DEST_PATH}/initrd-arc"
+  
+  FOUND_ASSET=false
   while read -r ID NAME; do
-    if [ "${NAME}" = "buildroot-${TAG}.zip" ]; then
+    echo "Checking asset: ${NAME}"
+    if [[ "${NAME}" == buildroot*.zip ]]; then
+      FOUND_ASSET=true
       curl -kL -H "Authorization: token ${TOKEN}" -H "Accept: application/octet-stream" "https://api.github.com/repos/AuxXxilium/${REPO}/releases/assets/${ID}" -o "${DEST_PATH}/br.zip"
       echo "Buildroot: ${TAG}-${TYPE}"
       unzip -o "${DEST_PATH}/br.zip" -d "${DEST_PATH}"
@@ -290,9 +294,15 @@ function getBuildroot() {
       else
         echo "Error: Failed to extract kernel or initrd from ${NAME}"
         ls -R "${DEST_PATH}"
+        exit 1
       fi
     fi
   done < <(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/${REPO}/releases/tags/${TAG}" | jq -r '.assets[] | "\(.id) \(.name)"')
+
+  if [ "$FOUND_ASSET" = false ]; then
+    echo "Error: No matching buildroot asset found in release ${TAG}"
+    exit 1
+  fi
 }
 
 # Get latest Offline

@@ -203,7 +203,7 @@ jobs:
           makeLatest: true
           allowUpdates: true
           owner: ${{ github.repo.owner }}
-          repo: arc-beta
+          repo: arc
           token: ${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}
           body: |
             ### Note:
@@ -267,7 +267,7 @@ jobs:
           makeLatest: true
           allowUpdates: true
           owner: ${{ github.repo.owner }}
-          repo: arc-essential
+          repo: arc
           token: ${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}
           body: |
             ### Note:

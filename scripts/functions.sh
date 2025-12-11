@@ -285,14 +285,23 @@ function getBuildroot() {
       unzip -o "${DEST_PATH}/br.zip" -d "${DEST_PATH}"
       
       # Try to find kernel and initrd
-      find "${DEST_PATH}" -type f -name "bzImage-arc" -exec mv -f {} "${DEST_PATH}/bzImage-arc" \;
-      find "${DEST_PATH}" -type f -name "initrd-arc" -exec mv -f {} "${DEST_PATH}/initrd-arc" \;
+      KERNEL_PATH=$(find "${DEST_PATH}" -type f -name "bzImage-arc" | head -n 1)
+      INITRD_PATH=$(find "${DEST_PATH}" -type f -name "initrd-arc" | head -n 1)
+      
+      if [ -n "${KERNEL_PATH}" ] && [ "${KERNEL_PATH}" != "${DEST_PATH}/bzImage-arc" ]; then
+        mv -f "${KERNEL_PATH}" "${DEST_PATH}/bzImage-arc"
+      fi
+      
+      if [ -n "${INITRD_PATH}" ] && [ "${INITRD_PATH}" != "${DEST_PATH}/initrd-arc" ]; then
+        mv -f "${INITRD_PATH}" "${DEST_PATH}/initrd-arc"
+      fi
       
       if [ -f "${DEST_PATH}/bzImage-arc" ] && [ -f "${DEST_PATH}/initrd-arc" ]; then
         echo "Buildroot files extracted successfully"
         break
       else
         echo "Error: Failed to extract kernel or initrd from ${NAME}"
+        echo "Contents of ${DEST_PATH}:"
         ls -R "${DEST_PATH}"
         exit 1
       fi
@@ -330,8 +339,8 @@ function repackInitrd() {
   local PLUGIN_PATH="${2}"
   local OUTPUT_PATH="${3:-${INITRD_FILE}}"
 
-  [ -z "${INITRD_FILE}" ] || [ ! -f "${INITRD_FILE}" ] && exit 1
-  [ -z "${PLUGIN_PATH}" ] || [ ! -d "${PLUGIN_PATH}" ] && exit 1
+  [ -z "${INITRD_FILE}" ] || [ ! -f "${INITRD_FILE}" ] && echo "Error: Initrd file ${INITRD_FILE} not found" && exit 1
+  [ -z "${PLUGIN_PATH}" ] || [ ! -d "${PLUGIN_PATH}" ] && echo "Error: Plugin path ${PLUGIN_PATH} not found" && exit 1
 
   INITRD_FILE="$(realpath "${INITRD_FILE}")"
   PLUGIN_PATH="$(realpath "${PLUGIN_PATH}")"

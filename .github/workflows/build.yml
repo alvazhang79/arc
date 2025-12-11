@@ -64,7 +64,7 @@ jobs:
       # Get Dependencies
       - name: Get Dependencies
         run: |
-          . scripts/functions.sh "${{ secrets.BUILD_TOKEN }}"
+          . scripts/functions.sh "${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}"
 
           echo "Get Dependencies"
           getAddons "files/p3/addons"

@@ -15,7 +15,12 @@ function getLKMs() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/rp-lkms.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-lkm/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-lkm/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch LKM tags. Response: $RESPONSE"
+      exit 1
+  fi
   export LKMTAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "rp-lkms.zip" ]; then
@@ -40,7 +45,12 @@ function getAddons() {
   local CACHE_DIR="/tmp/addons"
   local CACHE_FILE="/tmp/addons.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-addons/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-addons/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Addon tags. Response: $RESPONSE"
+      exit 1
+  fi
   export ADDONTAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "addons-${TAG}.zip" ]; then
@@ -73,7 +83,12 @@ function getModules() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/modules.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-modules/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-modules/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Module tags. Response: $RESPONSE"
+      exit 1
+  fi
   export MODULETAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "modules-${TAG}.zip" ]; then
@@ -97,7 +112,12 @@ function getConfigs() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/configs.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-configs/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-configs/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Config tags. Response: $RESPONSE"
+      exit 1
+  fi
   export CONFIGTAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "configs-${TAG}.zip" ]; then
@@ -121,7 +141,12 @@ function getPatches() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/patches.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-patches/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-patches/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Patch tags. Response: $RESPONSE"
+      exit 1
+  fi
   export PATCHTAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "patches-${TAG}.zip" ]; then
@@ -145,7 +170,12 @@ function getCustom() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/custom.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-custom/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-custom/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Custom tags. Response: $RESPONSE"
+      exit 1
+  fi
   export CUSTOMTAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "custom-${TAG}.zip" ]; then
@@ -169,7 +199,12 @@ function getTheme() {
   local DEST_PATH="${1}"
   local CACHE_FILE="/tmp/theme.zip"
   rm -f "${CACHE_FILE}"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-theme/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/arc-theme/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Theme tags. Response: $RESPONSE"
+      exit 1
+  fi
   export THEMETAG="${TAG}"
   while read -r ID NAME; do
     if [ "${NAME}" = "arc-theme-${TAG}.zip" ]; then
@@ -197,7 +232,12 @@ function getBuildroot() {
   local REPO="arc-buildroot-${TYPE}"
 
   echo "Getting Buildroot-${TYPE} begin"
-  TAG=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/${REPO}/releases" | jq -r ".[].tag_name" | sort -rV | head -1)
+  RESPONSE=$(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/${REPO}/releases")
+  TAG=$(echo "$RESPONSE" | jq -r ".[].tag_name" 2>/dev/null | sort -rV | head -1)
+  if [ -z "$TAG" ]; then
+      echo "Error: Failed to fetch Buildroot tags. Response: $RESPONSE"
+      exit 1
+  fi
   export BRTAG="${TAG}"
   [ ! -d "${DEST_PATH}" ] && mkdir -p "${DEST_PATH}"
   rm -f "${DEST_PATH}/bzImage-arc"

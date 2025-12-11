@@ -17,8 +17,9 @@ on:
           - ubuntu-latest
           - self-hosted
       version:
-        description: "version (3.0.10)"
+        description: "version"
         required: true
+        default: "3.0.10"
         type: string
       notice:
         description: "Notice here"

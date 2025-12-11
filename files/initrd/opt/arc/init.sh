@@ -228,9 +228,10 @@ patch_configs_732() {
     # Inject SA6400 7.3.2 definition if missing
     # Version: 7.3.2-86009
     local VER="7.3.2-86009"
-    if [ -z "$(readConfigKey "epyc7002.\"SA6400\".\"${VER}\"" "${D_FILE}")" ]; then
-       writeConfigKey "epyc7002.\"SA6400\".\"${VER}\".url" "https://cndl.synology.cn/download/DSM/release/7.3.2/86009/DSM_SA6400_86009.pat" "${D_FILE}"
-       writeConfigKey "epyc7002.\"SA6400\".\"${VER}\".hash" "null" "${D_FILE}"
+    local KEY="epyc7002.\"SA6400\".\"${VER}\""
+    if [ -z "$(readConfigKey "${KEY}" "${D_FILE}")" ]; then
+       writeConfigKey "${KEY}.url" "https://cndl.synology.cn/download/DSM/release/7.3.2/86009/DSM_SA6400_86009.pat" "${D_FILE}"
+       writeConfigKey "${KEY}.hash" "null" "${D_FILE}"
     fi
   fi
 }

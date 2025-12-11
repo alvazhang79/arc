@@ -279,9 +279,18 @@ function getBuildroot() {
       curl -kL -H "Authorization: token ${TOKEN}" -H "Accept: application/octet-stream" "https://api.github.com/repos/AuxXxilium/${REPO}/releases/assets/${ID}" -o "${DEST_PATH}/br.zip"
       echo "Buildroot: ${TAG}-${TYPE}"
       unzip -o "${DEST_PATH}/br.zip" -d "${DEST_PATH}"
-      mv -f "${DEST_PATH}/bzImage" "${DEST_PATH}/bzImage-arc"
-      mv -f "${DEST_PATH}/rootfs.cpio.zst" "${DEST_PATH}/initrd-arc"
-      [ -f "${DEST_PATH}/bzImage-arc" ] && [ -f "${DEST_PATH}/initrd-arc" ] && break
+      
+      # Try to find kernel and initrd
+      find "${DEST_PATH}" -name "bzImage*" -not -name "bzImage-arc" -exec mv -f {} "${DEST_PATH}/bzImage-arc" \;
+      find "${DEST_PATH}" -name "rootfs*" -not -name "initrd-arc" -exec mv -f {} "${DEST_PATH}/initrd-arc" \;
+      
+      if [ -f "${DEST_PATH}/bzImage-arc" ] && [ -f "${DEST_PATH}/initrd-arc" ]; then
+        echo "Buildroot files extracted successfully"
+        break
+      else
+        echo "Error: Failed to extract kernel or initrd from ${NAME}"
+        ls -R "${DEST_PATH}"
+      fi
     fi
   done < <(curl -skL -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/AuxXxilium/${REPO}/releases/tags/${TAG}" | jq -r '.assets[] | "\(.id) \(.name)"')
 }

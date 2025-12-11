@@ -145,7 +145,11 @@ jobs:
           sudo mount ${LOOPX}p1 "/tmp/p1"
           sudo mount ${LOOPX}p3 "/tmp/p3"
 
-          [ ! -f "bre/bzImage-arc" ] || [ ! -f "bre/initrd-arc" ] && exit 1
+          if [ ! -f "bre/bzImage-arc" ] || [ ! -f "bre/initrd-arc" ]; then
+            echo "Error: Kernel or Initrd missing in bre/"
+            ls -R bre/
+            exit 1
+          fi
 
           echo "Repack initrd"
           cp -f "bre/bzImage-arc" "files/p3/bzImage-arc"

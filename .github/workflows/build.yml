@@ -164,7 +164,7 @@ jobs:
 
           sudo losetup --detach ${LOOPX}
 
-          echo "Image Converter"
+          echo "Create Arc vmdk"
           qemu-img convert -p -f raw -O vmdk ${IMAGE_FILE} arc-dyn.vmdk
           qemu-img convert -p -f raw -O vmdk -o subformat=monolithicFlat ${IMAGE_FILE} arc.vmdk
 

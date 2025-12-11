@@ -257,7 +257,7 @@ function getBuildroot() {
   local REPO=""
   local ZIP_NAME=""
   local TAG_VAR=""
-  local REPO="arc-buildroot-${TYPE}"
+  local REPO="arc-${TYPE}"
 
   echo "Getting Buildroot-${TYPE} begin"
   if [ -n "${TOKEN}" ]; then

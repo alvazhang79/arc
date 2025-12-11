@@ -2892,7 +2892,7 @@ function rebootMenu() {
   esac
 
   dialog --backtitle "$(backtitle)" --title "Power Menu" \
-    --infobox "Option: ${resp} selected ...!" 3 50
+    --infobox "${resp} selected ...!" 3 50
   if [ "${REDEST}" = "poweroff" ]; then
     poweroff
     exit 0

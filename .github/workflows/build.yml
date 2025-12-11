@@ -204,7 +204,7 @@ jobs:
           allowUpdates: true
           owner: ${{ github.repo.owner }}
           repo: arc-beta
-          token: ${{ secrets.BUILD_TOKEN }}
+          token: ${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}
           body: |
             ### Note:
               - ${{ inputs.notice }}
@@ -236,7 +236,7 @@ jobs:
           allowUpdates: true
           owner: ${{ github.repo.owner }}
           repo: arc
-          token: ${{ secrets.BUILD_TOKEN }}
+          token: ${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}
           body: |
             ### Note:
               - ${{ inputs.notice }}
@@ -268,7 +268,7 @@ jobs:
           allowUpdates: true
           owner: ${{ github.repo.owner }}
           repo: arc-essential
-          token: ${{ secrets.BUILD_TOKEN }}
+          token: ${{ secrets.BUILD_TOKEN || secrets.GITHUB_TOKEN }}
           body: |
             ### Note:
               - ${{ inputs.notice }}
